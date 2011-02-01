@@ -299,6 +299,20 @@ namespace SplitTeams
             long? minDiff = null;//trying to obtain the minimum distance between the swap effect and the current difference
             long halfDiff = Convert.ToInt64(Math.Abs(Math.Ceiling((double)diff / 2)));
             long swapEffect = 0; //effect of swapping items between the 2 teams
+            //shortcut evaluation
+            if (diff > 0 && team1[team1.Length - 1].Rating - team2[0].Rating <= diff)
+            {
+                player1 = team1.Length - 1;
+                player2 = 0;
+                return true;
+            }
+            if (diff < 0 && team2[team2.Length - 1].Rating - team1[0].Rating <= diff)
+            {
+                player1 = 0;
+                player2 = team2.Length - 1;
+                return true;
+            }
+
             for (int i = 0; i < team1.Length && swapEffect != diff; i++)
             {
                 long rating = team1[i].Rating;
@@ -469,6 +483,7 @@ namespace SplitTeams
             startDiff = diff;
             double percentageComplete = 0, previousPercentage = 0;
             Console.WriteLine();
+            Console.Write("\r0 %");
             while (diff != 0 && FindSwappables(team1, team2, diff, out s1, out s2))
             {
                 Swap(team1, team2, s1, s2, ref sum1, ref sum2);
@@ -481,7 +496,7 @@ namespace SplitTeams
                     Console.Write(string.Format("\r{0:f2}%", percentageComplete));
                 }
             }
-            Console.WriteLine("\r100%   ");
+            Console.WriteLine("\r100 %   ");
         }
 
         #region Util
@@ -492,12 +507,18 @@ namespace SplitTeams
 
             DateTime start = DateTime.Now;
             _Players = new Player[_TotalPlayers];
-            int shift = 0;
+            int shift = 0, dots = 0, onePercent = _Players.Length / 100;
+            bool flip = false;
             for (int i = 0; i < _Players.Length; i++)
             {
-                //int min = rnd.Next(i);
-                //int x = rnd.Next(min, min * i);
-                if (i % 7 == 0) shift = rnd.Next(32, 63);
+                if (i % 7 == 0)
+                    shift = rnd.Next(32, 63);
+                if (i % onePercent == 0)
+                {
+                    dots = (dots + 1) % 10;
+                    flip = dots == 0;
+                    Console.Write('\r' + new string('.', flip ? dots : 10 - dots) + new string(' ', flip ? 10 - dots : dots));
+                }
                 _Players[i] = new Player { Name = "Player" + i.ToString(), Rating = (long)(mt19937.genrand() >> shift) };//(long)mersenneTwister.genrand_uint32() };
             }
             DateTime end = DateTime.Now;
@@ -591,7 +612,7 @@ namespace SplitTeams
                 new Player{Name="J", Rating=11  },
                 new Player{Name="K", Rating=44  },
             };
-            _TotalPlayers = 8888888;
+            _TotalPlayers = 888888;
 
             InsureTotalPlayers(args);
             //_Players = new Player[_TotalPlayers];
