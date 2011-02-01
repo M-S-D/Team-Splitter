@@ -215,7 +215,7 @@ namespace SplitTeams
 
         private static void GeneratePlayers()
         {
-            mt19937.sgenrand((ulong)rnd.Next());
+            mt19937.sgenrand(100);
 
             DateTime start = DateTime.Now;
             _Players = new Player[_TotalPlayers];
@@ -233,7 +233,7 @@ namespace SplitTeams
                     if (dots == 0) flip = !flip;
                     Console.Write('\r' + new string('.', flip ? dots : 10 - dots) + new string(' ', flip ? 10 - dots : dots));
                 }
-                _Players[i] = new Player { Name = "Player" + i.ToString(), Rating = (long)(mt19937.genrand() >> shift) };//(long)mersenneTwister.genrand_uint32() };
+                _Players[i] = new Player { Name = "Player" + i.ToString(), Rating = (long)(mt19937.genrand() % 5000) };//(long)mersenneTwister.genrand_uint32() };
             }
             DateTime end = DateTime.Now;
             TimeSpan diff = end.Subtract(start);
