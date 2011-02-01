@@ -1,6 +1,9 @@
 ﻿using System;
 namespace SplitTeams
 {
+    /// <summary>
+    /// This code was posted by arithma http://www.lebgeeks.com/forums/viewtopic.php?pid=60482#p60482
+    /// </summary>
     public class mt19937
     {
         /* Period parameters */
